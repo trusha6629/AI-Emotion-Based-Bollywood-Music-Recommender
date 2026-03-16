@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Music Suggestor</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Mood Music Suggestor</h1>
+    </div>
+
+    <p>Detect your emotion using the webcam to get Bollywood music recommendations.</p>
+
+    <div class="emotion-section">
+      <h2>Emotion Detection</h2>
+      <video id="video" width="320" height="240" autoplay muted></video>
+      <br>
+      <button id="detectEmotionBtn">Detect Emotion</button>
+      <p id="emotionDisplay"></p>
+    </div>
+
+    <div id="musicPlayer">
+      <h2>Recommended Music</h2>
+      <div id="player"></div>
+      <br>
+      <button id="nextSongBtn">Play Another Bollywood Song</button>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
