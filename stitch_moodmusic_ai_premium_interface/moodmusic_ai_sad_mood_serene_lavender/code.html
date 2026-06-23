@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MoodMusic AI - Sad Mood Detected</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0b1326;
+            color: #dae2fd;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(23, 31, 51, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.05);
+        }
+        .lavender-glow {
+            background: radial-gradient(circle at center, rgba(213, 187, 249, 0.08) 0%, transparent 70%);
+        }
+        .baby-blue-glow {
+            background: radial-gradient(circle at center, rgba(167, 204, 224, 0.12) 0%, transparent 80%);
+        }
+        .visualizer-bar {
+            width: 2px;
+            background: linear-gradient(to top, #a7cce0, #d5bbf9);
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-tertiary-container": "#6038b3",
+                "tertiary-fixed": "#eaddff",
+                "on-secondary": "#0b3445",
+                "surface-variant": "#2d3449",
+                "secondary-fixed-dim": "#a7cce0",
+                "inverse-surface": "#dae2fd",
+                "on-tertiary": "#3c0090",
+                "primary-container": "#d6bcfa",
+                "surface-bright": "#31394d",
+                "on-tertiary-fixed": "#24005b",
+                "outline": "#958e99",
+                "on-surface-variant": "#ccc4cf",
+                "error-container": "#93000a",
+                "on-primary-fixed": "#250f43",
+                "surface-tint": "#d5bbf9",
+                "secondary": "#a7cce0",
+                "on-secondary-fixed": "#001e2b",
+                "secondary-container": "#294d5f",
+                "primary": "#edddff",
+                "on-error-container": "#ffdad6",
+                "inverse-primary": "#6a548a",
+                "on-primary-container": "#5e497e",
+                "primary-fixed": "#eddcff",
+                "tertiary-container": "#d1bdff",
+                "surface-container-high": "#222a3d",
+                "on-secondary-fixed-variant": "#274b5c",
+                "surface-container-highest": "#2d3449",
+                "surface-dim": "#0b1326",
+                "on-surface": "#dae2fd",
+                "on-error": "#690005",
+                "outline-variant": "#4a454e",
+                "background": "#0b1326",
+                "tertiary-fixed-dim": "#d1bcff",
+                "tertiary": "#eadeff",
+                "primary-fixed-dim": "#d5bbf9",
+                "on-primary-fixed-variant": "#513c71",
+                "on-tertiary-fixed-variant": "#5429a6",
+                "on-background": "#dae2fd",
+                "secondary-fixed": "#c3e8fd",
+                "surface": "#0b1326",
+                "on-primary": "#3a2659",
+                "surface-container": "#171f33",
+                "on-secondary-container": "#99bed2",
+                "surface-container-lowest": "#060e20",
+                "surface-container-low": "#131b2e",
+                "error": "#ffb4ab",
+                "inverse-on-surface": "#283044"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-desktop": "64px",
+                "stack-sm": "12px",
+                "base": "8px",
+                "container-max-width": "1280px",
+                "stack-md": "24px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "stack-lg": "48px"
+            },
+            "fontFamily": {
+                "headline-lg": ["Manrope"],
+                "headline-md": ["Manrope"],
+                "body-lg": ["Manrope"],
+                "body-md": ["Manrope"],
+                "label-sm": ["Geist"]
+            },
+            "fontSize": {
+                "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface-dim selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center px-margin-desktop w-full h-20 bg-surface/60 backdrop-blur-[24px] border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.1)] fixed top-0 z-[60]">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-secondary tracking-tight">MoodMusic AI</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<nav class="flex space-x-6">
+<a class="text-secondary border-b-2 border-secondary pb-1 font-label-sm text-label-sm" href="#">Discover</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label-sm text-label-sm" href="#">Mood Scan</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label-sm text-label-sm" href="#">My Library</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-secondary transition-colors">language</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-secondary transition-colors">settings</span>
+<span class="material-symbols-outlined text-secondary cursor-pointer active:scale-95 transition-transform" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</header>
+<main class="pt-20 pb-32 min-h-screen relative overflow-hidden">
+<!-- Atmospheric Background Glows -->
+<div class="absolute top-1/4 -left-20 w-96 h-96 baby-blue-glow pointer-events-none opacity-40"></div>
+<div class="absolute bottom-1/4 -right-20 w-96 h-96 lavender-glow pointer-events-none opacity-20"></div>
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Left Column: Detection Content -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<section class="animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="flex items-center gap-3 mb-2">
+<span class="text-on-secondary-container bg-secondary-container/20 px-3 py-1 rounded-full text-label-sm font-label-sm tracking-widest uppercase">Mood Analysis Result</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-4">
+                        Sad Mood Detected <span class="inline-block animate-bounce">😢</span>
+</h1>
+<div class="flex items-center gap-6 mb-8">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-label-sm uppercase tracking-tighter">Confidence Score</span>
+<span class="text-headline-md font-headline-md text-secondary">88% Confidence</span>
+</div>
+<div class="h-12 w-[1px] bg-white/10"></div>
+<p class="max-w-md text-body-lg text-on-surface-variant/80 italic">
+                            "You seem a bit reflective today. Here's a curated selection of soulful melodies to accompany your mood."
+                        </p>
+</div>
+<div class="flex flex-wrap gap-4">
+<button class="bg-secondary text-on-secondary font-bold py-4 px-8 rounded-xl shadow-[0_0_15px_rgba(167,204,224,0.2)] active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                            Play Mood Radio
+                        </button>
+<button class="border-2 border-secondary/30 text-secondary font-bold py-4 px-8 rounded-xl hover:bg-secondary/10 active:scale-95 transition-all">
+                            Analyze Again
+                        </button>
+</div>
+</section>
+<!-- Recommendations Carousel -->
+<section class="mt-12">
+<div class="flex justify-between items-end mb-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Recommended for You</h2>
+<button class="text-secondary text-label-sm font-label-sm hover:underline">View All</button>
+</div>
+<div class="flex overflow-x-auto gap-6 no-scrollbar pb-4 snap-x">
+<!-- Card 1 -->
+<div class="min-w-[240px] snap-start glass-card p-4 rounded-2xl group cursor-pointer hover:border-secondary/40 transition-all">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A melancholy digital painting of a lonely figure standing under a single streetlamp in the rain. The color palette is dominated by deep violets, indigo, and faint pink highlights on the wet pavement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiuCP9At7Ub3Nwjwh1meFqu9flzMEm_OWmpNP1Agiq2nNoouryAePrmwTeoKRsT8tIvqL6zxFGLycsU5jAG7O2EB0jICfdum6wTKuMbvW3AsTFLRT7v6aiA1uQJFQMyPJgCsFqOz9ebQtzc2LaAdMxTUcPgLng0LoP8fgRKUsf43h3htZgpNayYVEegA_TCxO_6XzfiVjEgBCQhwKB6jrdziv3MlsWRupNDzHXwlkxprNISMTxQPX0mYr470anAiYAVzp9ijtkMHQ"/>
+<div class="absolute inset-0 bg-surface/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+</div>
+<h3 class="font-body-md text-on-surface font-semibold mb-1 truncate">Solitude Whispers</h3>
+<p class="text-label-sm text-on-surface-variant">Lumina Noir</p>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[240px] snap-start glass-card p-4 rounded-2xl group cursor-pointer hover:border-secondary/40 transition-all">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Abstract cinematic visual showing bokeh lights of a distant city blurred through a rainy windowpane." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlLEaPMySLz007ZcllONCyHT_QBhq8iNkPLNtc0BPQW590EzQgGhsT95_5PSDMRjUsF3Vf_pzvMFPowfo4eSe_DU0Tl34747s5V0Q24K3hKyz0_OkhjAsPl06N8yAjxfcoZT99cc8lnG-kS6hTt3bp8UcTI59I-JyboAmofJKZP7g0GcarBZ6NZH-4vTz9ekFKj-X0OazTDvo3eZevTYbVkLLL28tdE0dw20kixzvWDAg0YjOJ5zR_h4oZig6JpudALh1bwt0uz4k"/>
+<div class="absolute inset-0 bg-surface/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+</div>
+<h3 class="font-body-md text-on-surface font-semibold mb-1 truncate">Midnight Rain</h3>
+<p class="text-label-sm text-on-surface-variant">Velvet Sound</p>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[240px] snap-start glass-card p-4 rounded-2xl group cursor-pointer hover:border-secondary/40 transition-all">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Minimalist long exposure photograph of waves crashing softly against a dark shore at twilight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMZH_kLQROwaQLpieeCvaNofqkzO5KCMj0B0GFVyKm2czto1ONkGjht7GTS-jHbN4_ObDGGpE3KBeoGxXadscymE7vSO-Zn0SyaHBsSAnLNJ3z9k_DLeKcfoqoIKrnuCZtYHQolmBQ4o9E7q5jjIKu8ziCe2dX2bmPAPvMpXsfqUjpZCJxpbXg2SiQ-XreoOGPv2mt9Jj-_D56liAfnkBF63Rd-bNZ6wtRIFeU4SsSCO1dNZMM0OBjS_WOGDnTCQGlLSzhWJKclVM"/>
+<div class="absolute inset-0 bg-surface/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+</div>
+<h3 class="font-body-md text-on-surface font-semibold mb-1 truncate">Fading Horizons</h3>
+<p class="text-label-sm text-on-surface-variant">Aeon Flux</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Live Analysis -->
+<aside class="lg:col-span-4 flex flex-col gap-6">
+<div class="glass-card rounded-3xl p-6 border-white/5 sticky top-32 overflow-hidden">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<h3 class="text-label-sm font-label-sm text-on-surface uppercase tracking-widest">Live Analysis</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
+</div>
+<div class="relative rounded-2xl overflow-hidden border border-white/5 mb-6 group">
+<img class="w-full grayscale contrast-125 opacity-70 group-hover:opacity-100 transition-opacity" data-alt="Close up portrait of a young man with a contemplative and reflective facial expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK9CHFfNHJ4UcGn3UT-5d5hLjxohrUqhmAQ-iHuP5OtJAxvl47HnAi7phWhhR_SHFqm-r72CWvFJdVIHnCuCHVgNLwe1M0awaDVCw81_Gnur0gwumGIDjXfB_fqGTfh9wwsDqNcwm4bW3MEVbZwTUhgTrrqGgqTbZiFJ19dmXcR7ync5oiB97Bd03EAb8Ksesd0T_K6lrbwCJ-vq0fnC85-3sYVzrJ5IjKkM23c0lqqzMO7JmlgcsgsMBomRXovBJDGMz_nfVN2a4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-label-sm font-label-sm text-secondary mb-1">Status: Scanning...</p>
+<p class="text-body-md font-bold text-on-surface">Reflective Expression</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Eye Gaze</span>
+<span class="text-secondary">Introverted</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full">
+<div class="bg-secondary h-full rounded-full w-[72%]"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm pt-2">
+<span class="text-on-surface-variant">Tension Level</span>
+<span class="text-secondary">Low (Relaxed)</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full">
+<div class="bg-secondary h-full rounded-full w-[20%] shadow-[0_0_8px_rgba(167,204,224,0.4)]"></div>
+</div>
+</div>
+<div class="mt-8 p-4 bg-secondary-container/10 rounded-xl border border-secondary/20">
+<p class="text-label-sm leading-relaxed text-on-secondary-container">
+                            The AI has detected subtle downward facial markers and a sustained low-energy vocal frequency, indicating a period of high emotional processing.
+                        </p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Bottom Player Shell -->
+<footer class="fixed bottom-0 w-full z-[70] bg-surface-container/60 backdrop-blur-[24px] border-t border-white/5 flex flex-col md:flex-row justify-between items-center px-6 md:px-margin-desktop py-4 shadow-[0_-8px_32px_rgba(167,204,224,0.05)]">
+<!-- Track Info -->
+<div class="flex items-center gap-4 w-full md:w-1/3">
+<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 glass-card">
+<img class="w-full h-full object-cover" data-alt="Small album art showing rain droplets on a dark purple glass surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNmNNksBdFosOtjUJYNJ45cCaXw15ZTE_yesdI73GDv14v7ehVOkfMX-OKH5K0FdOxYcnVg-eYKr5m8xpZVONHDU4Pgj6qI9bLIAXUms8YXcdIry2Y0m3JnZHBSlM6tkwAzM_zlWcrY-EYmGNl7i9S2P1chaf8iViTsW45h3UyKqlC0A8-e3zsa9ixwguWPp2geJjkzkYKY2Xjmo42DrtCiu-LPGFCN5qgy4qg1opDUXdFBHq1xYo9Qtf80F8XYGLxGKbzKuv_BgY"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-on-surface font-bold text-body-md truncate">Echoes in the Rain</span>
+<span class="text-on-surface-variant text-label-sm truncate">The Lofi Collective</span>
+</div>
+<span class="material-symbols-outlined text-secondary ml-2 cursor-pointer" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<!-- Controls -->
+<div class="flex flex-col items-center gap-2 w-full md:w-1/3 my-4 md:my-0">
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer">shuffle</span>
+<span class="material-symbols-outlined text-on-surface cursor-pointer text-3xl">skip_previous</span>
+<div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-on-secondary cursor-pointer active:scale-90 transition-all shadow-[0_0_15px_rgba(167,204,224,0.3)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pause</span>
+</div>
+<span class="material-symbols-outlined text-on-surface cursor-pointer text-3xl">skip_next</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer">repeat</span>
+</div>
+<!-- Progress Bar -->
+<div class="flex items-center w-full gap-3 max-w-md">
+<span class="text-[10px] text-on-surface-variant">1:24</span>
+<div class="flex-1 h-[3px] bg-white/10 rounded-full relative group cursor-pointer">
+<div class="absolute h-full w-[40%] bg-gradient-to-r from-secondary-container to-secondary rounded-full"></div>
+<div class="absolute left-[40%] top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant">3:45</span>
+</div>
+</div>
+<!-- Extra Controls / Visualizer -->
+<div class="hidden md:flex items-center justify-end gap-6 w-1/3">
+<div class="flex items-center gap-1">
+<div class="visualizer-bar" style="animation-delay: 0s"></div>
+<div class="visualizer-bar" style="animation-delay: 0.2s"></div>
+<div class="visualizer-bar" style="animation-delay: 0.4s"></div>
+<div class="visualizer-bar" style="animation-delay: 0.1s"></div>
+<div class="visualizer-bar" style="animation-delay: 0.3s"></div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">volume_up</span>
+<div class="w-24 h-[3px] bg-white/10 rounded-full">
+<div class="h-full w-2/3 bg-on-surface-variant rounded-full"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer">playlist_play</span>
+</div>
+</footer>
+<!-- Mobile Navigation -->
+<nav class="md:hidden fixed bottom-0 w-full z-[80] bg-surface-container/60 backdrop-blur-[24px] border-t border-white/5 flex justify-around items-center px-4 py-4 rounded-t-xl shadow-[0_-8px_32px_rgba(167,204,224,0.05)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-6 py-2 shadow-[0_0_15px_rgba(167,204,224,0.2)]">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-sm text-label-sm">Mood Scan</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">library_music</span>
+<span class="font-label-sm text-label-sm">My Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">play_arrow</span>
+<span class="font-label-sm text-label-sm">Player</span>
+</div>
+</nav>
+<script>
+        const progressBar = document.querySelector('.flex-1.h-\\[3px\\]');
+        if (progressBar) {
+            progressBar.addEventListener('click', (e) => {
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                progressBar.querySelector('.absolute.h-full').style.width = (percent * 100) + '%';
+                progressBar.querySelector('.absolute.left-\\[40\\%\\]').style.left = (percent * 100) + '%';
+            });
+        }
+
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

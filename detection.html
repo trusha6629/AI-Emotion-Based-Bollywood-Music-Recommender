@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MoodMusic AI - Analyzing Mood</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#6038b3",
+                    "tertiary-fixed": "#eaddff",
+                    "on-secondary": "#0b3445",
+                    "surface-variant": "#2d3449",
+                    "secondary-fixed-dim": "#a7cce0",
+                    "inverse-surface": "#dae2fd",
+                    "on-tertiary": "#3c0090",
+                    "primary-container": "#d6bcfa",
+                    "surface-bright": "#31394d",
+                    "on-tertiary-fixed": "#24005b",
+                    "outline": "#958e99",
+                    "on-surface-variant": "#ccc4cf",
+                    "error-container": "#93000a",
+                    "on-primary-fixed": "#250f43",
+                    "surface-tint": "#d5bbf9",
+                    "secondary": "#a7cce0",
+                    "on-secondary-fixed": "#001e2b",
+                    "secondary-container": "#294d5f",
+                    "primary": "#edddff",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#6a548a",
+                    "on-primary-container": "#5e497e",
+                    "primary-fixed": "#eddcff",
+                    "tertiary-container": "#d1bdff",
+                    "surface-container-high": "#222a3d",
+                    "on-secondary-fixed-variant": "#274b5c",
+                    "surface-dim": "#0b1326",
+                    "on-surface": "#dae2fd",
+                    "on-error": "#690005",
+                    "outline-variant": "#4a454e",
+                    "background": "#0b1326",
+                    "tertiary-fixed-dim": "#d1bcff",
+                    "tertiary": "#eadeff",
+                    "primary-fixed-dim": "#d5bbf9",
+                    "on-primary-fixed-variant": "#513c71",
+                    "on-tertiary-fixed-variant": "#5429a6",
+                    "on-background": "#dae2fd",
+                    "secondary-fixed": "#c3e8fd",
+                    "surface": "#0b1326",
+                    "on-primary": "#3a2659",
+                    "surface-container": "#171f33",
+                    "on-secondary-container": "#99bed2",
+                    "surface-container-lowest": "#060e20",
+                    "surface-container-low": "#131b2e",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#283044",
+                    "surface-container-highest": "#2d3449"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "stack-sm": "12px",
+                    "base": "8px",
+                    "container-max-width": "1280px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "stack-lg": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-sm": ["Geist"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glow-breathe {
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { box-shadow: 0 0 20px rgba(213, 187, 249, 0.2); border-color: rgba(213, 187, 249, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(167, 204, 224, 0.4); border-color: rgba(167, 204, 224, 0.4); }
+        }
+        .scan-line {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #a7cce0, transparent);
+            position: absolute;
+            top: 0;
+            animation: scan 3s linear infinite;
+            box-shadow: 0 0 15px #a7cce0;
+        }
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(213, 187, 249, 0.15);
+        }
+        .bg-navy-gradient {
+            background: radial-gradient(circle at top, #171f33 0%, #0b1326 100%);
+        }
+    </style>
+</head>
+<body class="bg-navy-gradient text-on-background min-h-screen font-body-lg">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-10 py-4">
+<div class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">MoodMusic AI</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-lg text-body-lg hover:text-primary transition-colors duration-300" href="#">English</a>
+<a class="text-on-surface-variant font-medium font-body-lg text-body-lg hover:text-primary transition-colors duration-300" href="#">Hindi</a>
+<a class="text-on-surface-variant font-medium font-body-lg text-body-lg hover:text-primary transition-colors duration-300" href="#">Gujarati</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors duration-300" data-icon="dark_mode">dark_mode</button>
+</div>
+</header>
+<main class="pt-32 pb-40 flex flex-col items-center px-10 max-w-7xl mx-auto">
+<!-- Hero Section / Mood Detection -->
+<section class="w-full flex flex-col items-center text-center">
+<h1 class="font-headline-lg text-headline-lg mb-4 text-on-surface max-w-3xl">
+            Analyzing your mood...
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12">
+            Discover the music that matches your soul.
+        </p>
+<!-- Sophisticated Webcam Container -->
+<div class="relative w-full max-w-2xl aspect-[4/3] rounded-[2.5rem] overflow-hidden border-2 glow-breathe glass-panel mb-12">
+<img alt="User webcam preview" class="w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAusoPqkQMzxk49klyX7tbDzOWlbVvDdZlaKuh5uL9gOl4u8TczSHLhnrr9Ul3LAlOxaLHWqH87_ayNgQV9Bh1iwe2XFldV3q1P5UERxMub5Tzkl31mqGj3WbbRbUqekE2FK5biyxLjc5NvclRGD7Oe6w_Ib9diYNmy8rK8iTGaJQbvr6Tl6v5L1WiFEcnCA5HbY2YpIg1P9cXsmuidgqKv4-dABrbKCU8h46JG6D3jpiF4KC7J9HvYORfWaaTcQH1qdxSyqkfUsHI"/>
+<!-- Scanning UI Overlays -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<div class="scan-line"></div>
+<!-- AI Mesh Face Guide (Decorative) -->
+<div class="absolute inset-0 border-[40px] border-surface-dim/40 backdrop-grayscale-[0.5]"></div>
+<div class="z-10 bg-secondary/20 backdrop-blur-md px-6 py-2 rounded-full border border-secondary/30">
+<span class="font-label-sm text-label-sm text-secondary tracking-widest uppercase">Mood State: Processing</span>
+</div>
+</div>
+<!-- Corner Brackets -->
+<div class="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/60 rounded-tl-xl"></div>
+<div class="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-primary/60 rounded-tr-xl"></div>
+<div class="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-primary/60 rounded-bl-xl"></div>
+<div class="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-primary/60 rounded-br-xl"></div>
+</div>
+<!-- Activation Button -->
+<button class="group relative px-12 py-5 bg-primary-container text-on-primary-container rounded-full font-headline-md text-headline-md flex items-center gap-4 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(213,187,249,0.3)]">
+<span class="material-symbols-outlined" data-icon="neurology">neurology</span>
+            Scanning...
+            <div class="absolute inset-0 rounded-full border-2 border-primary group-hover:animate-ping opacity-20"></div>
+</button>
+</section>
+<!-- Dynamic Information Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter w-full mt-24">
+<div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" data-icon="psychology">psychology</span>
+<h3 class="font-headline-md text-headline-md mb-2">Biometric Analysis</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">AI-driven facial expression mapping detects subtle emotional shifts in real-time.</p>
+</div>
+<div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" data-icon="equalizer">equalizer</span>
+<h3 class="font-headline-md text-headline-md mb-2">Curated Flow</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Harmonizing your current state with deep-learning music recommendation engines.</p>
+</div>
+<div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" data-icon="waves">waves</span>
+<h3 class="font-headline-md text-headline-md mb-2">Atmospheric Synesthesia</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The interface adapts its luminosity and palette to match the detected sonic landscape.</p>
+</div>
+</div>
+</main>
+<!-- Aura Player -->
+<div class="fixed bottom-0 w-full z-50 rounded-t-xl border-t border-white/5 bg-surface-container/30 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.2)] p-6">
+<div class="max-w-7xl mx-auto flex items-center justify-between opacity-40">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-surface-container-high rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="music_note">music_note</span>
+</div>
+<div>
+<div class="w-32 h-4 bg-surface-container-high rounded mb-2"></div>
+<div class="w-20 h-3 bg-surface-container-high/50 rounded"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 flex-1 max-w-md">
+<div class="flex items-center gap-6 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="shuffle">shuffle</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="skip_previous">skip_previous</span>
+<button class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-secondary" data-icon="play_arrow">play_arrow</span>
+</button>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="skip_next">skip_next</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="repeat">repeat</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-0 h-full bg-secondary"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer" data-icon="volume_up">volume_up</span>
+<div class="w-24 h-1 bg-surface-container-high rounded-full"></div>
+<span class="material-symbols-outlined cursor-pointer" data-icon="fullscreen">fullscreen</span>
+</div>
+</div>
+<!-- Mobile Navigation -->
+<nav class="md:hidden flex justify-between pt-6 border-t border-white/5 mt-4">
+<div class="flex flex-col items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="library_music">library_music</span>
+<span class="font-label-sm text-label-sm mt-1">Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</div>
+</nav>
+</div>
+<script>
+    // Micro-interaction for the Scanning Button
+    const scanBtn = document.querySelector('button');
+    scanBtn.addEventListener('click', () => {
+        alert('AI Mood Analysis starting... please hold your expression.');
+    });
+
+    // Atmospheric mouse glow effect
+    document.addEventListener('mousemove', (e) => {
+        const glow = document.createElement('div');
+        glow.className = 'fixed pointer-events-none w-64 h-64 rounded-full bg-primary/5 blur-[120px] z-0';
+        glow.style.left = e.clientX - 128 + 'px';
+        glow.style.top = e.clientY - 128 + 'px';
+        
+        // Limit the number of glows for performance
+        const existingGlows = document.querySelectorAll('.pointer-events-none.bg-primary\\/5');
+        if (existingGlows.length > 0) {
+            existingGlows[0].remove();
+        }
+        document.body.appendChild(glow);
+    });
+</script>
+</body></html>

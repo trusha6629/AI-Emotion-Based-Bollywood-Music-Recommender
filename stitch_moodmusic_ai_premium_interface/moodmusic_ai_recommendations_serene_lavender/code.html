@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-card {
+            background: rgba(23, 31, 51, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(213, 187, 249, 0.1);
+        }
+        .mood-glow-happy {
+            background: radial-gradient(circle at center, rgba(213, 187, 249, 0.08) 0%, transparent 70%);
+        }
+        .text-gradient-happy {
+            background: linear-gradient(135deg, #edddff 0%, #d5bbf9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(213, 187, 249, 0.3);
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#edddff",
+                        "on-primary": "#3a2659",
+                        "primary-container": "#d6bcfa",
+                        "on-primary-container": "#5e497e",
+                        "secondary": "#a7cce0",
+                        "on-secondary": "#0b3445",
+                        "secondary-container": "#294d5f",
+                        "on-secondary-container": "#99bed2",
+                        "tertiary": "#eadeff",
+                        "background": "#0b1326",
+                        "surface": "#0b1326",
+                        "surface-container": "#171f33",
+                        "surface-container-high": "#222a3d",
+                        "surface-container-highest": "#2d3449",
+                        "on-surface": "#dae2fd",
+                        "on-surface-variant": "#ccc4cf",
+                        "outline": "#958e99",
+                        "outline-variant": "#4a454e",
+                        "error": "#ffb4ab",
+                        "primary-fixed-dim": "#d5bbf9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "64px",
+                        "unit": "8px",
+                        "section-gap": "48px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "label-caps": ["Geist"],
+                        "body-sm": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "display-lg-mobile": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-sm": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-lg min-h-screen selection:bg-primary-fixed-dim/30">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-container-margin py-4">
+<div class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">MoodMusic AI</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">English</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Hindi</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Gujarati</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors" data-icon="dark_mode">dark_mode</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-white/10">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC60nC-quiMo1QxpqbPPLuVbO8v0bF3FLM-NYjIuW5_Co24hbSbC09CA-3SaAzm-e7s3UK0izrLxr0DUyfLpUJxc0zdnE1FtqWh3zoF0t8CtxBaYuHm66EzisaATv9k-WM9FdRgyPqISUONZO2P095JjbBDv1wkVKW8tSNJdveTPGNK8oepimQGkiNdltbFBXs0H-v5wBqxLWcV4hZ9FXVOX_6A-a7MBpJvt1MwEP5yux40lFZDOixsir3jdE5wlntN3NWipsTgGMk"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-container-margin max-w-7xl mx-auto mood-glow-happy">
+<!-- Hero Section: Mood Result -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start mb-section-gap">
+<div class="lg:col-span-8">
+<div class="glass-card rounded-xl p-8 relative overflow-hidden group">
+<!-- Background ambient glow for the card -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary-fixed-dim/20 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary text-4xl animate-bounce" style="font-variation-settings: 'FILL' 1;">sentiment_very_satisfied</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-gradient-happy">Happy Mood Detected</h1>
+</div>
+<div class="inline-flex items-center px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary font-label-caps mb-6">
+                            94% Confidence
+                        </div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                            You appear cheerful and energetic today. Here's a curated selection of vibrant tracks to keep the vibe going.
+                        </p>
+<div class="mt-8 flex flex-wrap gap-4">
+<button class="px-8 py-3 bg-primary-fixed-dim text-on-primary rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary-fixed-dim/20">
+                                Play Mood Radio
+                            </button>
+<button class="px-8 py-3 glass-card rounded-full font-bold hover:bg-white/5 transition-all text-on-surface">
+                                Analyze Again
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Webcam Feed -->
+<div class="lg:col-span-4">
+<div class="glass-card rounded-xl p-4 aspect-video relative overflow-hidden">
+<div class="absolute top-4 left-4 z-10 flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-label-caps text-on-surface-variant text-[10px]">LIVE ANALYSIS</span>
+</div>
+<img class="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-500" data-alt="A focused high-angle medium shot of a young woman smiling radiantly towards a laptop screen in a dimly lit studio environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpvdyQnaiLDCBXft3Tw2ZampecrQvro2x4X-p2fTKkOmcFda_O1V1Ub7cZ7sVy4fIzb1NVHLACODCj5Ea4rx3FxJCX-OIY2nEKimvVX4lPYja0xpDlLf_kG7RigKFyx0qremo-SIh2e9lL8R2PU_ovK_8aiGeVtOR-HQn4Wi_1_Qeikeghg-vfM0t9bAhrQjwoa7wPHt6IMrhgEBCQk6TmFcCJtUtiTtAqsACNjr-H7OZHn8XxEn3NXin7rtsJhQRXQD5s_k3zfhA"/>
+<div class="absolute inset-0 border-2 border-secondary/30 rounded-lg pointer-events-none"></div>
+</div>
+<div class="mt-4 flex justify-between items-center px-2">
+<div class="flex flex-col">
+<span class="font-label-caps text-on-surface-variant">MICRO-EXPRESSIONS</span>
+<span class="font-body-sm text-secondary">Genuine Smile (Duchenne)</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer" data-icon="settings">settings</span>
+</div>
+</div>
+</div>
+<!-- Recommendations Section -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md mb-2">Recommended for You</h2>
+<p class="font-body-sm text-on-surface-variant">AI-curated based on your current emotional frequency.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 glass-card rounded-full hover:bg-white/10 transition-colors material-symbols-outlined text-on-surface-variant hover:text-primary">chevron_left</button>
+<button class="p-2 glass-card rounded-full hover:bg-white/10 transition-colors material-symbols-outlined text-on-surface-variant hover:text-primary">chevron_right</button>
+</div>
+</div>
+<div class="flex gap-gutter overflow-x-auto pb-8 custom-scrollbar snap-x">
+<!-- Song Card 1 -->
+<div class="min-w-[240px] group snap-start">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4 glass-card">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Modern abstract album art featuring vibrant orange and yellow fluid 3D shapes floating in a dark cosmic space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcxbvg-5V9ZldNc8-8P1fFMqp1uCLWW_w7R1c5fVgSJrupV9k5sswcKGycXlRrby335XIs2qcxdk_OcWaE2cU4e9k2ozzpVDE4rJWATSuTejd_xqxErVDXCxJVWFPVULiQucenLc9mTzZzySmv1Gx-_jmA7_Esre4gP7RcZrHp0g7YaFj-D5dVq_PrA_yqyW69J8eqwDt5kxD0ur5p5FwzfKSbFJetO1Xu-BXLKhpnNUUGnl2JFqsnlUP2CQIeP7Vm6itQc0rTIBE"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<button class="w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h3 class="font-headline-md text-[18px] mb-1 truncate group-hover:text-secondary transition-colors">Sunshine State</h3>
+<p class="font-body-sm text-on-surface-variant truncate">Liquid Velvet • Golden Hour</p>
+</div>
+<!-- Song Card 2 -->
+<div class="min-w-[240px] group snap-start">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4 glass-card">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Conceptual music artwork showing golden light rays piercing through a misty prismatic glass structure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlS1FSpopzVN7pA6_4GInW4zDzILXxM734hNBziIWZF-m1FOGLKC9d34MjEK6aQTcEmtP9zlk9kvJjE5bW0ngkJg4MXqJ7lQZHdwql0PZA5tkarWitl2FzRguRLSox4FVndR8sOQtshXFstqafzuu5s3eQooV-GUqdpepgSfY5SNifWTpX-Bzg6Q0TLrHXwBH9EJCYdWMcQunatD5n9j1Gh7iCWzEfp5Oi6JvEDriaq0vwx2GInm7086N7tsjNWlN8mSCjxFvXUNw"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<button class="w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h3 class="font-headline-md text-[18px] mb-1 truncate group-hover:text-secondary transition-colors">Morning Glow</h3>
+<p class="font-body-sm text-on-surface-variant truncate">The Luminescents</p>
+</div>
+<!-- Song Card 3 -->
+<div class="min-w-[240px] group snap-start">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4 glass-card">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Dynamic photography of a vibrant summer festival crowd under a warm sunset sky." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWDu1ObIosa2G7ToG6jBl_wSGDIPKtXm27piYXYiRQSzVTe84cohffomXqMTJEYH3MT_NsLBdbYg9o2RdzOM63MDkK4ZuB69sGfOUcqFfJBvvhl_39OILz5UZBZl_Y9OYmlxUAl19l3fxyj6Smk1pdvEJ9hm0GemFhGHPAG5XQv3YZpGNc_258bZepQvXqMevd1jZNvfkD4hzeJdt8MHs4QR7y91Kc0Tpo4-ptGPEv5ijzFMZeWGIRO6_JdS0UptwqRd8TIcAIC1U"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<button class="w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h3 class="font-headline-md text-[18px] mb-1 truncate group-hover:text-secondary transition-colors">Vibrant Echoes</h3>
+<p class="font-body-sm text-on-surface-variant truncate">Frequency Collective</p>
+</div>
+<!-- Song Card 4 -->
+<div class="min-w-[240px] group snap-start">
+<div class="relative aspect-square rounded-xl overflow-hidden mb-4 glass-card">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="An artistic close-up of a holographic record spinning." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMH110I3fR2Va8x_bAzFyRZLW7JFbUZChbbQeAn1QptznU-ScFoTxslHp1EMrrEgLLn41NS4qX68I4Si12YtO-WAXY-yAOuqJhacf6GS7P106zpNAFbXn8pM0dUhmHAIncspOiJSrWmixfrE8a1mpJmmkiKXylCpRwkKjSvMxWcbxtl0eMIdGzfPEXYIeU4OIGi93Y-xPJyXtlRZ0Ur_ox2TlMGPLnnovuDm2ORSu_q8aY42DCEUKPs0BWGG-T-SXcmrP6Vr87qO8"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<button class="w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h3 class="font-headline-md text-[18px] mb-1 truncate group-hover:text-secondary transition-colors">Euphoria Flow</h3>
+<p class="font-body-sm text-on-surface-variant truncate">Solar Pulse</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Aura Player -->
+<div class="fixed bottom-0 left-0 w-full z-50 flex flex-col pt-2 pb-safe px-4 bg-surface-container/60 backdrop-blur-2xl border-t border-white/5 shadow-[0_-8px_30px_rgb(0,0,0,0.3)]">
+<!-- Progress Bar -->
+<div class="absolute top-0 left-0 w-full h-1 bg-white/10 overflow-hidden">
+<div class="h-full bg-secondary shadow-[0_0_10px_#a7cce0] w-[35%] transition-all duration-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-secondary rounded-full blur-[2px]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between py-3 max-w-7xl mx-auto w-full gap-4">
+<!-- Current Track Info -->
+<div class="flex items-center gap-4 min-w-[200px]">
+<div class="w-12 h-12 rounded-lg overflow-hidden border border-white/10 relative group">
+<img alt="Current Track" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqbOW1-9XK9di-DBQeaY3kEC55oTK1MJQkPgDAAUAQ9UkeLV-jDEUles4wPqixGjirxlqaxr3Bq5pdrOuNu1WysnHoYrQ-McYwFx7wUxq0kTyI8tXVkZBY7x3GDkbf-f23CBiOwAe6HXDoSsL5mYJAkoz68gNioBMAybvKWCC1_10txVg4GraShpnmQtcJ1J4xxleZGKl91Dt8fIdCMDhJVNJheNVQgqNf01YyFwlMs2-AadzZx8EJggqHrI_Uz12tdqYEffAii1U"/>
+<div class="absolute inset-0 bg-secondary/20 animate-pulse"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface truncate">Sunshine State</span>
+<span class="font-label-caps text-[10px] text-secondary tracking-widest uppercase">Current Mood: Happy</span>
+</div>
+</div>
+<!-- Player Controls -->
+<div class="flex flex-col items-center gap-1">
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-secondary transition-colors">shuffle</button>
+<button class="material-symbols-outlined text-on-surface hover:text-secondary transition-colors">skip_previous</button>
+<button class="w-12 h-12 rounded-full bg-secondary text-on-secondary flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="material-symbols-outlined text-on-surface hover:text-secondary transition-colors">skip_next</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-secondary transition-colors">repeat</button>
+</div>
+</div>
+<!-- Volume & Extra -->
+<div class="flex items-center gap-4 min-w-[200px] justify-end">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer">lyrics</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer">queue_music</span>
+<div class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">volume_up</span>
+<div class="w-24 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-on-surface-variant group-hover:bg-secondary w-2/3 transition-colors"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Global Navigation -->
+<div class="flex justify-around items-center py-3 border-t border-white/5">
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-caps mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">library_music</span>
+<span class="font-label-caps mt-1">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps mt-1">Profile</span>
+</a>
+</div>
+</div>
+<!-- Floating Atmosphere Elements -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] opacity-30">
+<div class="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] bg-primary-fixed-dim/10 blur-[120px] rounded-full animate-pulse"></div>
+<div class="absolute bottom-[10%] left-[5%] w-[30vw] h-[30vw] bg-secondary/10 blur-[100px] rounded-full animate-pulse" style="animation-delay: 2s"></div>
+</div>
+<script>
+        // Micro-interaction for song cards
+        document.querySelectorAll('.snap-start').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+
+        // Simple Waveform Mockup
+        const createWaveform = () => {
+            const container = document.createElement('div');
+            container.className = 'absolute bottom-0 left-0 w-full h-12 flex items-end gap-[2px] opacity-30';
+            for (let i = 0; i < 100; i++) {
+                const bar = document.createElement('div');
+                const height = Math.random() * 40 + 5;
+                bar.className = 'flex-1 bg-secondary rounded-t-sm transition-all duration-300';
+                bar.style.height = `${height}%`;
+                container.appendChild(bar);
+            }
+            return container;
+        }
+
+        // Animate pseudo-waveform
+        setInterval(() => {
+            document.querySelectorAll('.bg-secondary.rounded-t-sm').forEach(bar => {
+                const height = Math.random() * 40 + 10;
+                bar.style.height = `${height}%`;
+            });
+        }, 300);
+    </script>
+</body></html>

@@ -1,35 +1,401 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mood Music Suggestor</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MoodMusic AI - Analyzing Mood</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Geist:wght@500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-tertiary-container": "#6038b3",
+          "tertiary-fixed": "#eaddff",
+          "on-secondary": "#0b3445",
+          "surface-variant": "#2d3449",
+          "secondary-fixed-dim": "#a7cce0",
+          "inverse-surface": "#dae2fd",
+          "on-tertiary": "#3c0090",
+          "primary-container": "#d6bcfa",
+          "surface-bright": "#31394d",
+          "on-surface-variant": "#ccc4cf",
+          "surface-tint": "#d5bbf9",
+          "secondary": "#a7cce0",
+          "on-secondary-fixed": "#001e2b",
+          "secondary-container": "#294d5f",
+          "primary": "#edddff",
+          "inverse-primary": "#6a548a",
+          "on-primary-container": "#5e497e",
+          "surface-container-high": "#222a3d",
+          "surface-dim": "#0b1326",
+          "on-surface": "#dae2fd",
+          "outline-variant": "#4a454e",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#d5bbf9",
+          "on-background": "#dae2fd",
+          "secondary-fixed": "#c3e8fd",
+          "surface": "#0b1326",
+          "on-primary": "#3a2659",
+          "surface-container": "#171f33",
+          "surface-container-highest": "#2d3449"
+        },
+        borderRadius: {
+          DEFAULT: "0.25rem",
+          lg: "0.5rem",
+          xl: "0.75rem",
+          full: "9999px"
+        },
+        spacing: {
+          "margin-desktop": "64px",
+          "stack-sm": "12px",
+          base: "8px",
+          "container-max-width": "1280px",
+          "stack-md": "24px",
+          "margin-mobile": "20px",
+          gutter: "24px",
+          "stack-lg": "48px"
+        },
+        fontFamily: {
+          "headline-lg": ["Manrope"],
+          "headline-lg-mobile": ["Manrope"],
+          "headline-md": ["Manrope"],
+          "body-lg": ["Manrope"],
+          "body-md": ["Manrope"],
+          "label-sm": ["Geist"]
+        },
+        fontSize: {
+          "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+          "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+          "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background: radial-gradient(circle at top, #171f33 0%, #0b1326 100%);
+    color: #dae2fd;
+    font-family: 'Manrope', sans-serif;
+    overflow-x: hidden;
+  }
+  .glow-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 0 20px rgba(213, 187, 249, 0.2); border-color: rgba(213, 187, 249, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(167, 204, 224, 0.4); border-color: rgba(167, 204, 224, 0.4); }
+  }
+  .scan-line {
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #a7cce0, transparent);
+    position: absolute;
+    top: 0;
+    animation: scan 3s linear infinite;
+    box-shadow: 0 0 15px #a7cce0;
+  }
+  @keyframes scan {
+    0% { top: 0; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .glass-panel,
+  .glass-card {
+    background: rgba(45, 52, 73, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(213, 187, 249, 0.15);
+  }
+  #cameraFrame video {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  #cameraFrame.is-active video {
+    opacity: 0.68;
+  }
+  #cameraFrame.is-active #cameraPlaceholder {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(218, 226, 253, 0.25);
+    border-top-color: #a7cce0;
+    border-radius: 999px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .song-card {
+    min-width: 240px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    outline: none;
+  }
+  @media (min-width: 768px) {
+    .song-card { min-width: 280px; }
+  }
+  .song-artwork {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1;
+    margin-bottom: 12px;
+    border-radius: 1rem;
+    background: rgba(23, 31, 51, 0.6);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.28);
+  }
+  .song-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.82;
+    transition: transform 0.7s ease;
+  }
+  .song-card:hover .song-image,
+  .song-card:focus-visible .song-image {
+    transform: scale(1.1);
+  }
+  .play-button {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border-radius: 999px;
+    color: #3a2659;
+    background: #edddff;
+    box-shadow: 0 0 18px rgba(213, 187, 249, 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .song-card:hover .play-button,
+  .song-card:focus-visible .play-button,
+  .song-card.is-selected .play-button {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .play-button svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+  }
+  .song-chip-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .chip,
+  .album-chip {
+    color: #ccc4cf;
+    font-family: "Geist", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .chip { color: #a7cce0; }
+  .song-meta h4 {
+    margin: 0 0 4px;
+    color: #dae2fd;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .song-meta p {
+    margin: 0;
+    color: #ccc4cf;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .song-meta .album { display: none; }
+  .player-progress span,
+  #confidenceBar {
+    display: block;
+    height: 100%;
+    background: linear-gradient(to right, #a7cce0, #d5bbf9);
+  }
+  .youtube-transport {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Mood Music Suggestor</h1>
+<body class="text-on-background min-h-screen font-body-lg pb-40" data-theme="dark" data-mood="calm">
+<header class="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-xl border-b border-white/5 flex justify-between items-center gap-4 px-4 md:px-10 py-4">
+  <div class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface whitespace-nowrap">MoodMusic AI</div>
+  <nav class="flex flex-1 justify-center gap-3 sm:gap-5 md:gap-8 items-center" aria-label="Language">
+    <button class="language-option text-primary font-bold border-b-2 border-primary pb-1 font-body-lg text-body-lg bg-transparent border-x-0 border-t-0 shadow-none p-0" type="button" data-language-option="en">English</button>
+    <button class="language-option text-on-surface-variant font-medium font-body-lg text-body-lg hover:text-primary transition-colors duration-300 bg-transparent border-0 shadow-none p-0" type="button" data-language-option="hi">Hindi</button>
+    <button class="language-option text-on-surface-variant font-medium font-body-lg text-body-lg hover:text-primary transition-colors duration-300 bg-transparent border-0 shadow-none p-0" type="button" data-language-option="gu">Gujarati</button>
+  </nav>
+  <div class="flex items-center gap-4">
+    <select id="languageSelect" class="sr-only" aria-label="Select recommendation language">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="gu">Gujarati</option>
+    </select>
+  </div>
+</header>
+
+<main class="pt-32 pb-40 flex flex-col items-center px-10 max-w-7xl mx-auto">
+  <section class="w-full flex flex-col items-center text-center">
+    <p id="heroEyebrow" class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-4">AI-powered music intelligence</p>
+    <h1 id="moodResult" class="font-headline-lg text-headline-lg mb-4 text-on-surface max-w-3xl">Analyzing your mood...</h1>
+    <p id="heroIntro" class="font-body-lg text-body-lg text-on-surface-variant mb-12">Discover the music that matches your soul.</p>
+
+    <div id="cameraFrame" class="relative w-full max-w-2xl aspect-[4/3] rounded-[2.5rem] overflow-hidden border-2 glow-breathe glass-panel mb-8">
+      <video id="webcam" class="absolute inset-0 w-full h-full object-cover grayscale contrast-125" autoplay muted playsinline></video>
+      <div id="cameraPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center bg-surface-container/60">
+        <span class="material-symbols-outlined text-secondary text-6xl">neurology</span>
+        <strong id="cameraPlaceholderTitle" class="text-on-surface">Tap to start camera</strong>
+        <small id="cameraPlaceholderCopy" class="max-w-md text-on-surface-variant">Turn on the webcam when you are ready, then let the AI analyze your expression for a few seconds.</small>
+      </div>
+      <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div class="scan-line"></div>
+        <div class="absolute inset-0 border-[40px] border-surface-dim/40 backdrop-grayscale-[0.5]"></div>
+        <div class="z-10 bg-secondary/20 backdrop-blur-md px-6 py-2 rounded-full border border-secondary/30">
+          <span id="cameraStatusBadge" class="font-label-sm text-label-sm text-secondary tracking-widest uppercase">Mood State: Processing</span>
+        </div>
+      </div>
+      <p id="cameraOverlayText" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 max-w-md text-sm text-on-surface-variant">Camera is off. Tap the camera button to begin.</p>
+      <div class="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/60 rounded-tl-xl"></div>
+      <div class="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-primary/60 rounded-tr-xl"></div>
+      <div class="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-primary/60 rounded-bl-xl"></div>
+      <div class="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-primary/60 rounded-br-xl"></div>
     </div>
 
-    <p>Detect your emotion using the webcam to get Bollywood music recommendations.</p>
-
-    <div class="emotion-section">
-      <h2>Emotion Detection</h2>
-      <video id="video" width="320" height="240" autoplay muted></video>
-      <br>
-      <button id="detectEmotionBtn">Detect Emotion</button>
-      <p id="emotionDisplay"></p>
+    <div id="loadingIndicator" class="hidden items-center gap-3 text-secondary mb-5" aria-hidden="true">
+      <span class="spinner"></span>
+      <span id="loadingText">Analyzing your mood...</span>
     </div>
 
-    <div id="musicPlayer">
-      <h2>Recommended Music</h2>
-      <div id="player"></div>
-      <br>
-      <button id="nextSongBtn">Play Another Bollywood Song</button>
-    </div>
+    <button id="cameraToggleBtn" class="group relative px-12 py-5 bg-primary-container text-on-primary-container rounded-full font-headline-md text-headline-md flex items-center gap-4 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(213,187,249,0.3)]" type="button" aria-pressed="false" aria-label="Start camera">
+      <span class="material-symbols-outlined">neurology</span>
+      <span id="cameraToggleText">Start Camera</span>
+      <div class="absolute inset-0 rounded-full border-2 border-primary group-hover:animate-ping opacity-20"></div>
+    </button>
 
-  <script src="script.js"></script>
+    <p id="moodLabel" class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-8">Idle</p>
+    <p id="moodMessage" class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Start the camera to detect your mood and unlock recommendations.</p>
+
+    <button id="detectMoodBtn" class="mt-6 border-2 border-secondary/30 text-secondary font-bold py-4 px-8 rounded-full hover:bg-secondary/10 active:scale-95 transition-all duration-300" type="button">Camera Analysis Waiting</button>
+
+    <p id="cameraHint" class="mt-5 text-sm text-on-surface-variant/80">Start the camera to load face-api.js models and analyze your expression.</p>
+    <span id="backendStatus" class="sr-only">Browser emotion detection ready</span>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-gutter w-full mt-24">
+    <div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+      <span class="material-symbols-outlined text-secondary text-4xl mb-4">psychology</span>
+      <h3 class="font-headline-md text-headline-md mb-2">Biometric Analysis</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant">AI-driven facial expression mapping detects subtle emotional shifts in real time.</p>
+    </div>
+    <div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+      <span class="material-symbols-outlined text-secondary text-4xl mb-4">equalizer</span>
+      <h3 class="font-headline-md text-headline-md mb-2">Curated Flow</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant">Harmonizing your current state with music recommendations.</p>
+    </div>
+    <div class="glass-panel p-8 rounded-3xl group hover:border-primary/50 transition-all duration-500">
+      <span class="material-symbols-outlined text-secondary text-4xl mb-4">waves</span>
+      <h3 class="font-headline-md text-headline-md mb-2">Atmospheric Sync</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant">The interface adapts its luminosity and palette to match the detected mood.</p>
+    </div>
+  </section>
+
+  <section id="aiExplanationCard" class="glass-card rounded-3xl p-8 w-full mt-14" aria-live="polite">
+    <div class="flex items-center gap-4">
+      <span id="aiExplanationIcon" class="material-symbols-outlined text-secondary text-4xl">psychology</span>
+      <div>
+        <p id="aiExplanationEyebrow" class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">AI Mood Insight</p>
+        <h2 id="aiExplanationTitle" class="font-headline-md text-headline-md">Waiting for expression data</h2>
+      </div>
+    </div>
+    <p id="aiExplanationText" class="mt-4 text-on-surface-variant">Start the camera and MoodMusic AI will explain why a mood was detected.</p>
+    <div class="mt-5 flex justify-between text-sm text-on-surface-variant">
+      <span id="confidenceLabel">Confidence: --</span>
+      <span id="confidencePercent">--%</span>
+    </div>
+    <div class="mt-2 h-2 rounded-full bg-surface-container-highest overflow-hidden">
+      <span id="confidenceBar" style="width: 0%"></span>
+    </div>
+  </section>
+
+  <section class="w-full mt-14">
+    <div class="flex justify-between items-center mb-stack-md">
+      <div>
+        <h2 id="recommendationTitle" class="font-headline-md text-headline-md">Recommended for You</h2>
+        <p id="recommendationSubtitle" class="text-on-surface-variant/80">Songs that match your current emotional energy</p>
+      </div>
+    </div>
+    <div id="songGrid" class="flex gap-stack-md overflow-x-auto pb-gutter custom-scrollbar snap-x"></div>
+  </section>
+</main>
+
+<aside id="musicPlayer" class="fixed bottom-0 w-full z-50 rounded-t-xl border-t border-white/5 bg-surface-container/60 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.2)] p-6" aria-label="Music player">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="player-track flex items-center gap-4 min-w-0 w-full md:w-1/3">
+      <img id="playerThumbnail" class="player-thumbnail w-14 h-14 rounded-lg object-cover bg-surface-container-high" src="https://img.youtube.com/vi/2Vv-BfVoq4g/hqdefault.jpg" alt="Selected song poster"/>
+      <div class="player-copy min-w-0">
+        <p id="playerTitle" class="player-title m-0 text-on-surface font-bold truncate">Select a song</p>
+        <p id="playerArtist" class="player-artist m-0 text-on-surface-variant text-sm truncate">Your in-app player is ready</p>
+      </div>
+    </div>
+    <div class="player-controls flex flex-col items-center gap-2 flex-1 w-full max-w-md">
+      <div class="flex items-center gap-6 text-on-surface-variant">
+        <span id="playerCurrentTime" class="player-time text-xs">0:00</span>
+        <button id="playerPlayPauseBtn" class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shadow-lg text-on-secondary" type="button" aria-label="Play or pause selected song" disabled>
+          <svg id="playerPlayIcon" viewBox="0 0 24 24" class="w-6 h-6 fill-current" focusable="false" aria-hidden="true"><path d="M8 5v14l11-7L8 5Z"></path></svg>
+          <svg id="playerPauseIcon" class="hidden w-6 h-6 fill-current" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"></path></svg>
+        </button>
+        <span id="playerDuration" class="player-time text-xs">--:--</span>
+      </div>
+      <div class="player-progress w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+        <span id="playerProgressBar" style="width: 0%"></span>
+      </div>
+    </div>
+    <div class="player-badges flex items-center gap-3 text-on-surface-variant w-full md:w-1/3 md:justify-end">
+      <span id="playerMoodBadge" class="player-badge font-label-sm text-label-sm text-secondary uppercase">Calm</span>
+      <span id="playerLanguageBadge" class="player-badge font-label-sm text-label-sm uppercase">English</span>
+    </div>
+  </div>
+  <iframe id="youtubePlayer" class="youtube-transport" title="Embedded music player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+</aside>
+
+<script src="/vendor/face-api.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

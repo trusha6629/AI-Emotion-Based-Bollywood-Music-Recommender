@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MoodMusic AI - Angry Mood Detected</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(23, 31, 51, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.05);
+        }
+        .lavender-glow {
+            background: radial-gradient(circle at center, rgba(213, 187, 249, 0.15) 0%, transparent 70%);
+        }
+        .electric-glow {
+            background: radial-gradient(circle at center, rgba(106, 84, 138, 0.3) 0%, transparent 70%);
+        }
+        .visualizer-bar {
+            background: linear-gradient(to top, #c3e8fd, #d5bbf9);
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { height: 20%; }
+            50% { height: 100%; }
+        }
+        .visualizer-bar:nth-child(2) { animation-delay: 0.1s; }
+        .visualizer-bar:nth-child(3) { animation-delay: 0.3s; }
+        .visualizer-bar:nth-child(4) { animation-delay: 0.2s; }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d5bbf9;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#6038b3",
+                    "tertiary-fixed": "#eaddff",
+                    "on-secondary": "#0b3445",
+                    "surface-variant": "#2d3449",
+                    "secondary-fixed-dim": "#a7cce0",
+                    "inverse-surface": "#dae2fd",
+                    "on-tertiary": "#3c0090",
+                    "primary-container": "#d6bcfa",
+                    "surface-bright": "#31394d",
+                    "on-tertiary-fixed": "#24005b",
+                    "outline": "#958e99",
+                    "on-surface-variant": "#ccc4cf",
+                    "error-container": "#93000a",
+                    "on-primary-fixed": "#250f43",
+                    "surface-tint": "#d5bbf9",
+                    "secondary": "#a7cce0",
+                    "on-secondary-fixed": "#001e2b",
+                    "secondary-container": "#294d5f",
+                    "primary": "#edddff",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#6a548a",
+                    "on-primary-container": "#5e497e",
+                    "primary-fixed": "#eddcff",
+                    "tertiary-container": "#d1bdff",
+                    "surface-container-high": "#222a3d",
+                    "on-secondary-fixed-variant": "#274b5c",
+                    "surface-container-highest": "#2d3449",
+                    "on-surface": "#dae2fd",
+                    "on-error": "#690005",
+                    "outline-variant": "#4a454e",
+                    "background": "#0b1326",
+                    "tertiary-fixed-dim": "#d1bcff",
+                    "tertiary": "#eadeff",
+                    "primary-fixed-dim": "#d5bbf9",
+                    "on-primary-fixed-variant": "#513c71",
+                    "on-tertiary-fixed-variant": "#5429a6",
+                    "on-background": "#dae2fd",
+                    "secondary-fixed": "#c3e8fd",
+                    "surface": "#0b1326",
+                    "on-primary": "#3a2659",
+                    "surface-container": "#171f33",
+                    "on-secondary-container": "#99bed2",
+                    "surface-container-lowest": "#060e20",
+                    "surface-container-low": "#131b2e",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "stack-sm": "12px",
+                    "base": "8px",
+                    "container-max-width": "1280px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "stack-lg": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-sm": ["Geist"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background min-h-screen pb-32">
+<!-- Top Bar Component -->
+<nav class="bg-surface/60 backdrop-blur-[24px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)] flex justify-between items-center px-margin-desktop w-full h-20 fixed top-0 z-[100] hidden md:flex">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tight">MoodMusic AI</div>
+<div class="flex-1 flex justify-start items-center px-stack-lg">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-high/50 border-none rounded-full pl-12 pr-4 py-2 w-full focus:ring-2 focus:ring-primary text-body-md text-on-surface placeholder-on-surface-variant/50" placeholder="Search mood or genre..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">language</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">settings</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">account_circle</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-12 md:pt-32 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter relative">
+<!-- Live Analysis Sidebar -->
+<aside class="lg:col-span-3 space-y-stack-md order-2 lg:order-1">
+<div class="glass-card rounded-xl p-stack-md relative overflow-hidden">
+<div class="electric-glow absolute inset-0 pointer-events-none"></div>
+<div class="flex items-center justify-between mb-stack-sm">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Live Analysis</span>
+<span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#a7cce0]"></span>
+</div>
+<div class="relative rounded-lg overflow-hidden aspect-square mb-stack-sm">
+<img class="object-cover w-full h-full grayscale opacity-70 contrast-125" data-alt="A close-up portrait of a person with intense focused eyes and a slight furrowed brow, captured in high-contrast dramatic lighting. The scene is bathed in deep shadows with sharp electric blue highlights reflecting on the skin, creating an atmosphere of high-energy emotion and technological sophistication. The background is a minimalist obsidian black." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxuAq6oV3epr7ov4s2M6cJfRrM17700FgJz2Z1ohghJO_a1KAC03rDucxLxlGRBUbSPpxzDaPtvLxeeDJbD2JcKw96IcwmhaggTW8TVZdRpDgrEZmhk6SOvJuBQy_Zf-MxrhwqBL20TLyTCJoHVA01C4BgrR90ge_syGuqKKcColIJChrzHi8tpldQwjw2_K6XQ1a066gL-6bzQCQt5VwAyMljv7yRtt2w60gBNwG78sswMPRmuLSE0Ii6M24wBqmMTgeAsDrZjv0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-end gap-1 h-6">
+<div class="visualizer-bar w-1"></div>
+<div class="visualizer-bar w-1"></div>
+<div class="visualizer-bar w-1"></div>
+<div class="visualizer-bar w-1"></div>
+</div>
+</div>
+<div class="space-y-base">
+<div class="flex justify-between items-end">
+<span class="font-body-md text-on-surface-variant">Intensity</span>
+<span class="font-headline-md text-headline-md text-secondary">92%</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary shadow-[0_0_10px_#a7cce0]" style="width: 92%"></div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-stack-md hidden lg:block">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-stack-md uppercase">Vibe Stats</h3>
+<div class="space-y-stack-sm">
+<div class="flex justify-between">
+<span class="text-on-surface-variant/70 text-sm">BPM Focus</span>
+<span class="text-secondary font-bold">140 - 175</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant/70 text-sm">Timbre</span>
+<span class="text-secondary font-bold">Distorted</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant/70 text-sm">Mode</span>
+<span class="text-secondary font-bold">Phrygian</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Primary Detection Display -->
+<section class="lg:col-span-9 space-y-stack-lg order-1 lg:order-2">
+<!-- Hero Message -->
+<div class="relative">
+<div class="lavender-glow absolute -top-20 -left-20 w-80 h-80 pointer-events-none opacity-40"></div>
+<h1 class="font-headline-lg text-headline-lg mb-base flex items-center gap-stack-sm leading-tight">
+                High Energy / Angry Mood Detected <span class="text-4xl">⚡</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant/80 max-w-2xl mb-stack-lg">
+                Feeling intense? Let's channel that energy. Here are some powerful, high-bpm tracks to match your current state. Use the power of sound to navigate the heat.
+            </p>
+<div class="flex flex-wrap gap-stack-md">
+<button class="bg-primary text-on-primary font-bold py-4 px-8 rounded-full shadow-[0_0_20px_rgba(213,187,249,0.3)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                    Play Mood Radio
+                </button>
+<button class="border-2 border-secondary/30 text-secondary font-bold py-4 px-8 rounded-full hover:bg-secondary/10 active:scale-95 transition-all duration-300">
+                    Analyze Again
+                </button>
+</div>
+</div>
+<!-- Recommendations Grid -->
+<div>
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-headline-md text-headline-md">Recommended for You</h2>
+<div class="flex gap-stack-sm">
+<button class="p-2 glass-card rounded-full hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 glass-card rounded-full hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-stack-md overflow-x-auto pb-gutter custom-scrollbar snap-x">
+<!-- Song Card 1 -->
+<div class="min-w-[240px] md:min-w-[280px] snap-start group cursor-pointer">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-stack-sm glass-card border-none shadow-2xl">
+<img class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-80" data-alt="Digital album artwork featuring explosive bursts of electric lavender and deep obsidian shards, creating a sense of chaotic energy and aggressive power. Abstract futurism style with sharp geometric edges and glowing light trails." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI_09ddxUxn9KklzsklbL6sG4ozPm49YH0xuA_LRz2vAkrAhvkycQ6FvAgxw2n3-xXviTe4KwIRsge0ORrnRAcydAvudnJywpdrzUsBHYq2qL-6O3RetW4ZhxzbWTNTX7TGSbBouFP1sDjqXlBBCPltG2xgdzrHet4Uv3UQssD-_WjmPby0mPjZd2gB9nQ4u9EpGANoTBdDJ3S9nLQnmH_uRb8VqP2SSjskNESKQpOtljIp_7ZHey4IqhTMBmHmT33MFrkRWGTIuE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent flex items-end p-stack-md opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-primary text-on-primary p-4 rounded-full shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Ignition Point</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">Voltage Fury</p>
+</div>
+<!-- Song Card 2 -->
+<div class="min-w-[240px] md:min-w-[280px] snap-start group cursor-pointer">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-stack-sm glass-card border-none shadow-2xl">
+<img class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-80" data-alt="Cinematic cover art showcasing a crystalline landscape of glowing baby blue and lavender under a dark navy sky. The scene is dramatic with kinetic energy and atmospheric depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR1k2ntFPFChl4OFg0gi0K5C3jDjWV1BN-6VxVIpKS7D2yiQY0z7QAKx8jKUjsIoLyKFs77AKCvep9UHUK09484-wSnfiP3lIlLp2GLQyY-wQDQWwNnnD_VjEVgHewOT6lC8vFvFObZgnfsUOkRqJ9plhPCn1sUl2bfEoPUBzcJ5_e41Yu8S6Q4YktFfFUD4rVBcRmv5p-W2Yf0dbk5kH8xOxowWgA7wa8IY7NxxzYqtBKRF7q649QVK8raBAQHNGJpYoyRQpDnIo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent flex items-end p-stack-md opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-primary text-on-primary p-4 rounded-full shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Magma Flow</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">Thermal Core</p>
+</div>
+<!-- Song Card 3 -->
+<div class="min-w-[240px] md:min-w-[280px] snap-start group cursor-pointer">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-stack-sm glass-card border-none shadow-2xl">
+<img class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-80" data-alt="An abstract visualization of sound waves in a storm of deep lavender and electric blue particles. Heavy atmosphere suggesting high-bpm industrial techno." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK-Pfes1tsUf3ZlfWOrjpr7reEUQ7Llrrj4vzzDbf-3I9nZdl13TP8yc4tSWTV_tioyIBdb74urNcUfiYs249UenA2mNT7TOhoDXFf17wcKqiJajN1G3pTdOJGgdq-EiDwr9PI4w234iWyOSpaqkeMtYL2zXsJqx_QlvEMdgdsG4Z52AyUQ8DnqFETVwIcR1h_VlD5ludy8PjMJsHacF_o73yfJpS06nCaLhyixguNiwixj2oDpDKMQrUW9rK0iFRFMH4lQWyZFOc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent flex items-end p-stack-md opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-primary text-on-primary p-4 rounded-full shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Static Burn</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">Dead Signal</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Player -->
+<div class="fixed bottom-0 w-full z-[100] px-4 md:px-margin-desktop pb-6 pointer-events-none">
+<div class="max-w-5xl mx-auto glass-card rounded-2xl p-4 flex flex-col md:flex-row items-center gap-stack-md pointer-events-auto mb-4 border-white/5 bg-surface-container/90">
+<div class="flex items-center gap-stack-sm w-full md:w-1/3">
+<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+<img class="object-cover w-full h-full" data-alt="Close-up of currently playing track art with glowing lavender accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFcDU6XhC1FbJDe4p96uFYRk0iYCOknA8M3NB3DU3LOOhxMZoyh6VXlDAX8oGZK2RFct3yKW3sEzVgjL7ukOYPTg_1nDa5F-q-12Ze2jC4YEeDHjB2qNsGFw3HX8JHJr52grN2oSyFDYhhV8DrqtSyQmII69l8xtUuQFKhZOCNrtNYLGcjAOdqIc-joa_ex2dBZoT2wkRR_elGp44vGXad4SWEsZPO1amVZtJXI2nASvQhRuEY7BvFvBwRkiW1u3EnrwsxB2wQcmw"/>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface font-bold truncate">Ignition Point</span>
+<span class="text-on-surface-variant text-xs uppercase font-label-sm">Voltage Fury</span>
+</div>
+<span class="material-symbols-outlined text-secondary ml-auto md:ml-4 cursor-pointer hover:text-primary transition-colors">favorite</span>
+</div>
+<div class="flex flex-col flex-1 w-full gap-2">
+<div class="flex justify-center items-center gap-stack-lg">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">shuffle</span>
+<span class="material-symbols-outlined text-on-surface cursor-pointer hover:text-primary transition-colors">skip_previous</span>
+<button class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-on-primary shadow-[0_0_15px_rgba(213,187,249,0.4)] transform active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<span class="material-symbols-outlined text-on-surface cursor-pointer hover:text-primary transition-colors">skip_next</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">repeat</span>
+</div>
+<div class="flex items-center gap-stack-sm px-2">
+<span class="text-[10px] font-label-sm text-on-surface-variant">1:42</span>
+<div class="flex-1 h-1.5 bg-surface-container-highest rounded-full overflow-hidden group cursor-pointer relative">
+<div class="absolute h-full bg-gradient-to-r from-secondary to-primary shadow-[0_0_8px_#d5bbf9]" style="width: 45%"></div>
+<div class="absolute h-3 w-3 bg-white rounded-full -top-[3px] left-[45%] shadow-[0_0_10px_white]"></div>
+</div>
+<span class="text-[10px] font-label-sm text-on-surface-variant">3:45</span>
+</div>
+</div>
+<div class="hidden md:flex items-center justify-end gap-stack-md w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">lyrics</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">queue_music</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">volume_up</span>
+<div class="w-20 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 70%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden glass-card flex justify-around items-center px-4 py-3 rounded-full pointer-events-auto bg-surface-container/80 backdrop-blur-xl border-white/5">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm text-[10px]">Discover</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-tertiary-container rounded-xl px-4 py-1.5 shadow-[0_0_15px_rgba(213,187,249,0.2)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-sm text-[10px]">Mood Scan</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">library_music</span>
+<span class="font-label-sm text-[10px]">Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined">play_arrow</span>
+<span class="font-label-sm text-[10px]">Player</span>
+</div>
+</nav>
+</div>
+<script>
+    // Micro-interaction: Update progress bar dummy logic
+    let progress = 45;
+    const progressBar = document.querySelector('.flex-1.h-1\\.5 div:first-child');
+    const thumb = document.querySelector('.flex-1.h-1\\.5 div:last-child');
+    
+    setInterval(() => {
+        if (progress < 99) {
+            progress += 0.05;
+            if(progressBar) progressBar.style.width = `${progress}%`;
+            if(thumb) thumb.style.left = `${progress}%`;
+        }
+    }, 1000);
+
+    // Visualizer effect for the analysis feed
+    const bars = document.querySelectorAll('.visualizer-bar');
+    setInterval(() => {
+        bars.forEach(bar => {
+            const randomHeight = Math.floor(Math.random() * 80) + 20;
+            bar.style.height = `${randomHeight}%`;
+        });
+    }, 200);
+
+    // Parallax background effect
+    document.addEventListener('mousemove', (e) => {
+        const glows = document.querySelectorAll('.lavender-glow, .electric-glow');
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        
+        glows.forEach(glow => {
+            glow.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+        });
+    });
+</script>
+</body></html>
